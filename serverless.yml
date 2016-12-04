@@ -26,7 +26,14 @@ provider:
 
 functions:
   bobdylan:
-    handler: tweet.responder
+    environment:
+      TWITTER_USER: ${env:TWITTER_USER}
+      TWITTER_CONSUMERKEY: ${env:TWITTER_CONSUMERKEY}
+      TWITTER_SECRET: ${env:TWITTER_SECRET}
+      TWITTER_ACCESS_TOKEN: ${env:TWITTER_ACCESS_TOKEN}
+      TWITTER_ACCESS_TOKEN_SECRET: ${env:TWITTER_ACCESS_TOKEN_SECRET}
+      ELASTICSEARCH_URL: ${env:ELASTICSEARCH_URL}
+    handler: respond_to_tweet.responder
     events: 
       - externalSNS:  ${opt:topicarn}
 
@@ -37,8 +44,6 @@ functions:
       TWITTER_SECRET: ${env:TWITTER_SECRET}
       TWITTER_ACCESS_TOKEN: ${env:TWITTER_ACCESS_TOKEN}
       TWITTER_ACCESS_TOKEN_SECRET: ${env:TWITTER_ACCESS_TOKEN_SECRET}
-
-
       ELASTICSEARCH_URL: ${env:ELASTICSEARCH_URL}
     handler: regular_tweet.send_tweet
     events:
