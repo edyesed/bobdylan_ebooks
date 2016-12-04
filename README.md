@@ -42,5 +42,6 @@ This lambda is what regularly posts to the bobdylan_ebooks timeline
 
 1. The lambda inits
 1. Queries all songs in elasticsearch
+     1. searches for '*'
      1. Randomizes the results
 1. makes markov chains from the results

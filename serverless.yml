@@ -1,0 +1,47 @@
+#
+#  Take twitter email based input, do something, and then respond
+# 
+
+service: bobdylanebooks
+
+provider:
+  name: aws
+  runtime: python2.7
+
+# you can overwrite defaults here
+  stage: dev
+  region: us-west-2
+
+# you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "ses:SendEmail"
+        - "ses:SendRawEmail"
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "es:*"
+      Resource: "arn:aws:es:us-west-2:*:domain/edyesed-ebooks/*"
+
+functions:
+  bobdylan:
+    handler: tweet.responder
+    events: 
+      - externalSNS:  ${opt:topicarn}
+
+  regulartweet:
+    environment:
+      TWITTER_USER: ${env:TWITTER_USER}
+      TWITTER_CONSUMERKEY: ${env:TWITTER_CONSUMERKEY}
+      TWITTER_SECRET: ${env:TWITTER_SECRET}
+      TWITTER_ACCESS_TOKEN: ${env:TWITTER_ACCESS_TOKEN}
+      TWITTER_ACCESS_TOKEN_SECRET: ${env:TWITTER_ACCESS_TOKEN_SECRET}
+
+
+      ELASTICSEARCH_URL: ${env:ELASTICSEARCH_URL}
+    handler: regular_tweet.send_tweet
+    events:
+      - schedule:
+          rate: rate(90 minutes)
+          enabled: true
