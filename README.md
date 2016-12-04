@@ -11,9 +11,10 @@ There components, three.
 3. A Lambda with a batch schedule regularly tweets things
 
 ## The Batch Job That Imports Song Data
-(bin/find-and-download-songs.py)[bin/find-and-download-songs.py] scans <bobdylan.com/songs>, and iterates over the songs listed there. 
+[bin/find-and-download-songs.py](bin/find-and-download-songs.py) scans [http://bobdylan.com/songs](http://bobdylan.com/songs), and iterates over the songs listed there. 
 
 As it iterates through the list, it adds entries to elasticsearch
+
 1. A Song list originates from loading [bob's songs](http://bobdylan.com/songs/).
 1. Each song listed there is requested.
 1. *NEW FEATURE*: a `tags` field is added to the documents by way of [AutoTag](https://algorithmia.com/algorithms/nlp/AutoTag) from [algorithmia](https://algorithmia.com)
