@@ -15,16 +15,16 @@ from bs4 import BeautifulSoup as bs
 from pprint import pprint
 
 ES_HOST = os.environ.get('ELASTICSEARCH_URL', 'http://localhost:9200')
-ALG_KEY = os.environ.get('ALGORITHMIA_KEY', None)
+ALGO_KEY = os.environ.get('ALGORITHMIA_KEY', None)
 
 es = Elasticsearch([ES_HOST])
 
 
 if __name__ == "__main__":
     if ALG_KEY is None:
-        raise Exception('no ALG_KEY environment var', 'None')
+        raise Exception('no ALGORITHMIA_KEY environment var', 'None')
     #result = requests.get("http://www.bobdylan.com/songs/")
-    client = Algorithmia.client('sim+G3wMj3e3IwYxbXBOK1/fblb1')
+    client = Algorithmia.client(ALGO_KEY)
     algo = client.algo('nlp/AutoTag/1.0.0')
     song_list = requests.get("http://www.bobdylan.com/songs")
     song_list.raise_for_status()
