@@ -71,11 +71,13 @@ def es_search(es=None, searchword=None, min_hits=10, search_type="match",
     else:
         searchbody = {"query": {"more_like_this": {"fields": [
                       "text"], "like": searchword, "min_term_freq": 1}}}
-    results = es.search(index="songs", body=searchbody,
+    results = es.search(index='songs', doc_type='bobdylan',
+                        body=searchbody,
                         filter_path=['hits.total', 'hits.hits._source.text'])
     print("ES returned %s results" % results['hits']['total'])
     if results['hits']['total'] >= min_hits or fuck_it_well_do_it_live:
-        results = es.search(index="songs", body=searchbody,
+        results = es.search(index='songs', doc_type='bobdylan',
+                            body=searchbody,
                             filter_path=['hits.total',
                                          'hits.hits._source.text'],
                             size=min_hits * 3)
