@@ -25,17 +25,17 @@ provider:
       Resource: "arn:aws:es:us-west-2:*:domain/edyesed-ebooks/*"
 
 functions:
-  bobdylan:
-    environment:
-      TWITTER_USER: ${env:TWITTER_USER}
-      TWITTER_CONSUMERKEY: ${env:TWITTER_CONSUMERKEY}
-      TWITTER_SECRET: ${env:TWITTER_SECRET}
-      TWITTER_ACCESS_TOKEN: ${env:TWITTER_ACCESS_TOKEN}
-      TWITTER_ACCESS_TOKEN_SECRET: ${env:TWITTER_ACCESS_TOKEN_SECRET}
-      ELASTICSEARCH_URL: ${env:ELASTICSEARCH_URL}
-    handler: respond_to_tweet.responder
-    events: 
-      - externalSNS:  ${opt:topicarn}
+  #bobdylan:
+  #  environment:
+  #    TWITTER_USER: ${env:TWITTER_USER}
+  #    TWITTER_CONSUMERKEY: ${env:TWITTER_CONSUMERKEY}
+  #    TWITTER_SECRET: ${env:TWITTER_SECRET}
+  #    TWITTER_ACCESS_TOKEN: ${env:TWITTER_ACCESS_TOKEN}
+  #    TWITTER_ACCESS_TOKEN_SECRET: ${env:TWITTER_ACCESS_TOKEN_SECRET}
+  #    ELASTICSEARCH_URL: ${env:ELASTICSEARCH_URL}
+  #  handler: respond_to_tweet.responder
+  #  events: 
+  #    - externalSNS:  ${opt:topicarn}
 
   regulartweet:
     environment:
@@ -50,3 +50,41 @@ functions:
       - schedule:
           rate: rate(90 minutes)
           enabled: true
+
+  notifications:
+    environment:
+      TWITTER_USER: ${env:TWITTER_USER}
+      TWITTER_CONSUMERKEY: ${env:TWITTER_CONSUMERKEY}
+      TWITTER_SECRET: ${env:TWITTER_SECRET}
+      TWITTER_ACCESS_TOKEN: ${env:TWITTER_ACCESS_TOKEN}
+      TWITTER_ACCESS_TOKEN_SECRET: ${env:TWITTER_ACCESS_TOKEN_SECRET}
+      ELASTICSEARCH_URL: ${env:ELASTICSEARCH_URL}
+    handler: notifications.respond
+    events:
+      - schedule:
+          rate: rate(5 minutes)
+          enabled: true
+
+  # 
+  # Well, shit.
+  # This was a totally cool idea, but twitter won't let me register 
+  # a twilio based number.
+  # 
+  #twilio:
+  #  handler: twilio_handler.endpoint
+  #  events:
+  #    - http:
+  #        path: sms
+  #        method:  post
+  #        integration: lambda
+  #        response:
+  #          headers:
+  #            Content-Type: "'application/xml'"
+  #          template: $input.path('$')
+  #    - http:
+  #        path: sms
+  #        method:  get
+  #        integration: lambda-proxy
+  #        #response:
+  #        #  headers:
+  #        #    Content-Type: integration.response.header.Content-Type
