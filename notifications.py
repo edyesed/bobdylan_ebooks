@@ -91,6 +91,8 @@ def markov_response(es_results=None, max_len=140, reply_handle=None):
     # pprint(es_results)
     if reply_handle:
         response_text = "@{0} ".format(reply_handle)
+    else:
+        response_text = ""
     if es_results['hits']['total'] == 0:
         # Poor us, not enough hits!
         return markov_response(es_results=results)
