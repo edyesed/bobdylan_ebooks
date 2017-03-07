@@ -136,14 +136,28 @@ def markov_response(es_results=None):
     return(response_text)
 
 
-def twitter_reply(reply_type="", reply_text="", reply_handle=None, tweet_id=None):
-    api = twitter.Api(consumer_key=TWITTER_CONSUMERKEY,
-                      consumer_secret=TWITTER_SECRET,
-                      access_token_key=TWITTER_ACCESS_TOKEN,
-                      access_token_secret=TWITTER_ACCESS_TOKEN_SECRET)
+def twitter_reply(reply_type="", 
+                  reply_text="", 
+                  reply_handle=None, 
+                  latitude=None,
+                  longitude=None,
+                  r_api=None,
+                  tweet_id=None):
+    if r_api is None:
+        api = twitter.Api(consumer_key=TWITTER_CONSUMERKEY,
+                          consumer_secret=TWITTER_SECRET,
+                          access_token_key=TWITTER_ACCESS_TOKEN,
+                          access_token_secret=TWITTER_ACCESS_TOKEN_SECRET)
+    else:
+        api = r_api
     if reply_type == "TWEET":
         print("Sending tweet : %s" % (reply_text))
-        response = api.PostUpdate(reply_text)
+        #if latitude is None or longitude is None:
+        #    response = api.PostUpdate(reply_text)
+        #else:
+        response = api.PostUpdate(reply_text,
+                                  latitude=latitude,
+                                  longitude=longitude)
         print("Response from twitter API")
         print(response)
     pass
