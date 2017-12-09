@@ -25,18 +25,18 @@ provider:
       Resource: "arn:aws:es:us-west-2:*:domain/edyesed-ebooks/*"
 
 functions:
-  bobdylan:
-    # I can only seem to get EMAIL notifications of DMs.. 
-    environment:
-      TWITTER_USER: ${env:TWITTER_USER}
-      TWITTER_CONSUMERKEY: ${env:TWITTER_CONSUMERKEY}
-      TWITTER_SECRET: ${env:TWITTER_SECRET}
-      TWITTER_ACCESS_TOKEN: ${env:TWITTER_ACCESS_TOKEN}
-      TWITTER_ACCESS_TOKEN_SECRET: ${env:TWITTER_ACCESS_TOKEN_SECRET}
-      ELASTICSEARCH_URL: ${env:ELASTICSEARCH_URL}
-    handler: respond_to_tweet.responder
-    events: 
-      - externalSNS:  ${opt:topicarn}
+  #bobdylan:
+  #  # I can only seem to get EMAIL notifications of DMs.. 
+  #  environment:
+  #    TWITTER_USER: ${env:TWITTER_USER}
+  #    TWITTER_CONSUMERKEY: ${env:TWITTER_CONSUMERKEY}
+  #    TWITTER_SECRET: ${env:TWITTER_SECRET}
+  #    TWITTER_ACCESS_TOKEN: ${env:TWITTER_ACCESS_TOKEN}
+  #    TWITTER_ACCESS_TOKEN_SECRET: ${env:TWITTER_ACCESS_TOKEN_SECRET}
+  #    ELASTICSEARCH_URL: ${env:ELASTICSEARCH_URL}
+  #  handler: respond_to_tweet.responder
+  #  events: 
+  #    - externalSNS:  ${opt:topicarn}
 
   regulartweet:
     environment:
@@ -52,6 +52,7 @@ functions:
           rate: rate(90 minutes)
           enabled: true
 
+  # f'ing weirdo just started getting email on mentions.
   notifications:
     environment:
       TWITTER_USER: ${env:TWITTER_USER}

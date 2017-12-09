@@ -21,16 +21,18 @@ es = Elasticsearch([ES_HOST])
 
 
 if __name__ == "__main__":
-    if ALG_KEY is None:
-        raise Exception('no ALGORITHMIA_KEY environment var', 'None')
+    #if ALGO_KEY is None:
+    #    raise Exception('no ALGORITHMIA_KEY environment var', 'None')
     #result = requests.get("http://www.bobdylan.com/songs/")
-    client = Algorithmia.client(ALGO_KEY)
-    algo = client.algo('nlp/AutoTag/1.0.0')
+    if ALGO_KEY:
+        client = Algorithmia.client(ALGO_KEY)
+        algo = client.algo('nlp/AutoTag/1.0.0')
     song_list = requests.get("http://www.bobdylan.com/songs")
     song_list.raise_for_status()
     soup = bs(song_list.content, "html.parser")
     songs = soup.find_all(class_="song")
-    for song in songs[200:1]:
+    #for song in songs[200:1]:
+    for song in songs[200:]:
         a = song.find('a')
         if a:
             print(a.get('href'), a.text)
@@ -60,8 +62,11 @@ if __name__ == "__main__":
                 except AttributeError:
                     album = ""
             # print(lyrics.text)
-            algo_res = algo.pipe(res['_source']['text'].encode('utf-8'))
-            tags = also_res.results
+            if ALGO_KEY:
+                algo_res = algo.pipe(res['_source']['text'].encode('utf-8'))
+                tags = algo_res.results
+            else:
+                tags = []
             es_res = es.index(index='songs',
                               doc_type='bobdylan',
                               id=hashlib.md5(a.get('href')).hexdigest(),
@@ -72,4 +77,4 @@ if __name__ == "__main__":
                                     'url': a.get('href'),
                                     'tags': tags}
                               )
-            sleep(3)
+            sleep(1)
