@@ -7,6 +7,9 @@ service: bobdylanebooks
 provider:
   name: aws
   runtime: python2.7
+  environment:
+    DYNAMO_SONGS: ${self:service}-${opt:stage, self:provider.stage}-songs
+    DYNAMO_EVENTS: ${self:service}-${opt:stage, self:provider.stage}-events
 
 # you can overwrite defaults here
   stage: dev
@@ -64,6 +67,43 @@ functions:
       - schedule:
           rate: rate(5 minutes)
           enabled: true
+
+resources:
+  Resources:
+    SongsTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_SONGS}
+
+    EventsTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_EVENTS}
+ 
 
   # 
   # Well, shit.
