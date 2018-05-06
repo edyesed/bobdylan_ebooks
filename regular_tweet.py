@@ -129,6 +129,9 @@ def markov_response(es_results=None):
     response_text += "\n" + mc.generateString()
     response_text += "\n" + mc.generateString()
     response_text += "\n" + mc.generateString()
+    response_text += "\n" + mc.generateString()
+    response_text += "\n" + mc.generateString()
+    response_text += "\n" + mc.generateString()
 
     # trim down to <= 280 chars
     response_text = trim_to_280(text=response_text)
