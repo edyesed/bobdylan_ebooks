@@ -105,6 +105,10 @@ def markov_response(es_results=None, max_len=280, reply_handle=None):
     response_text += "\n" + mc.generateString()
     response_text += "\n" + mc.generateString()
     response_text += "\n" + mc.generateString()
+    response_text += "\n" + mc.generateString()
+    response_text += "\n" + mc.generateString()
+    response_text += "\n" + mc.generateString()
+    response_text += "\n" + mc.generateString()
     #keepwords = regular_tweet.trim_to_280(text=response_text)
     keepwords = regular_tweet.trim_to_x(text=response_text, max_len=max_len)
 
