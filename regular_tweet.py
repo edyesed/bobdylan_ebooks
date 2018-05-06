@@ -98,11 +98,17 @@ def print_with_timestamp(*args):
     print(datetime.utcnow().isoformat(), *args)
 
 
-def trim_to_140(text=None):
-    if (len(text)) > 140:
+def trim_to_x(text=None, max_len=280):
+    if (len(text)) > max_len:
+        text = " ".join(text.split(" ")[:-1])
+        return trim_to_x(text=text, max_len=max_len)
+    return text
+
+def trim_to_280(text=None):
+    if (len(text)) > 280:
         # split(" ") to preserve newlines
         text = " ".join(text.split(" ")[:-1])
-        return trim_to_140(text=text)
+        return trim_to_280(text=text)
     return text
 
 
@@ -111,7 +117,7 @@ def markov_response(es_results=None):
     # pprint(es_results)
     if es_results['hits']['total'] == 0:
         # Poor us, not enough hits!
-        return markov_response(es_results=results)
+        return markov_response(es_results=es_results)
     #print("dumping ES results in markov_response")
     # print(json.dumps(es_results))
     mc = pymarkovchain.MarkovChain()
@@ -124,8 +130,8 @@ def markov_response(es_results=None):
     response_text += "\n" + mc.generateString()
     response_text += "\n" + mc.generateString()
 
-    # trim down to <= 140 chars
-    response_text = trim_to_140(text=response_text)
+    # trim down to <= 280 chars
+    response_text = trim_to_280(text=response_text)
 
     try:
         response_text = response_text.lowercase()
@@ -136,14 +142,28 @@ def markov_response(es_results=None):
     return(response_text)
 
 
-def twitter_reply(reply_type="", reply_text="", reply_handle=None, tweet_id=None):
-    api = twitter.Api(consumer_key=TWITTER_CONSUMERKEY,
-                      consumer_secret=TWITTER_SECRET,
-                      access_token_key=TWITTER_ACCESS_TOKEN,
-                      access_token_secret=TWITTER_ACCESS_TOKEN_SECRET)
+def twitter_reply(reply_type="", 
+                  reply_text="", 
+                  reply_handle=None, 
+                  latitude=None,
+                  longitude=None,
+                  r_api=None,
+                  tweet_id=None):
+    if r_api is None:
+        api = twitter.Api(consumer_key=TWITTER_CONSUMERKEY,
+                          consumer_secret=TWITTER_SECRET,
+                          access_token_key=TWITTER_ACCESS_TOKEN,
+                          access_token_secret=TWITTER_ACCESS_TOKEN_SECRET)
+    else:
+        api = r_api
     if reply_type == "TWEET":
         print("Sending tweet : %s" % (reply_text))
-        response = api.PostUpdate(reply_text)
+        #if latitude is None or longitude is None:
+        #    response = api.PostUpdate(reply_text)
+        #else:
+        response = api.PostUpdate(reply_text,
+                                  latitude=latitude,
+                                  longitude=longitude)
         print("Response from twitter API")
         print(response)
     pass

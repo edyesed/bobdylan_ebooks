@@ -85,15 +85,17 @@ def print_with_timestamp(*args):
     print(datetime.utcnow().isoformat(), *args)
 
 
-def markov_response(es_results=None, max_len=140, reply_handle=None):
+def markov_response(es_results=None, max_len=280, reply_handle=None):
     # ok
     #print("MARKOV MARKOV MARKOV")
     # pprint(es_results)
     if reply_handle:
         response_text = "@{0} ".format(reply_handle)
+    else:
+        response_text = ""
     if es_results['hits']['total'] == 0:
         # Poor us, not enough hits!
-        return markov_response(es_results=results)
+        return markov_response(es_results=es_results)
     mc = pymarkovchain.MarkovChain()
     for songwords in es_results['hits']['hits']:
         #print("training with text: %s" % (songwords['_source']['text']))
@@ -103,7 +105,8 @@ def markov_response(es_results=None, max_len=140, reply_handle=None):
     response_text += "\n" + mc.generateString()
     response_text += "\n" + mc.generateString()
     response_text += "\n" + mc.generateString()
-    keepwords = regular_tweet.trim_to_140(text=response_text)
+    #keepwords = regular_tweet.trim_to_280(text=response_text)
+    keepwords = regular_tweet.trim_to_x(text=response_text, max_len=max_len)
 
     try:
         response_text = keepwords.lowercase()
@@ -182,6 +185,7 @@ def respond(event, context):
     mentions = False
     max_id = False
     try:
+        # pylint: disable=E1123
         res = es.search(index='mentions', 
                         doc_type='bobdylan_ebooks', 
                         body={"query": {"match_all": {}}, 
@@ -220,7 +224,7 @@ def respond(event, context):
 
     for mention in mentions:
         ## Find what they asked about, remove handles
-        input_text = re.sub("\s+@\S+", "", mention.text)
+        input_text = re.sub(r"\s+@\S+", "", mention.text)
         results = es_search(es,
                             searchword=input_text,
                             search_type="regular")

@@ -147,13 +147,13 @@ def print_with_timestamp(*args):
     print(datetime.utcnow().isoformat(), *args)
 
 
-def markov_response(es_results=None, max_len=140):
+def markov_response(es_results=None, max_len=280):
     # ok
     #print("MARKOV MARKOV MARKOV")
     # pprint(es_results)
     if es_results['hits']['total'] == 0:
         # Poor us, not enough hits!
-        return markov_response(es_results=results)
+        return markov_response(es_results=es_results)
     mc = pymarkovchain.MarkovChain()
     for songwords in es_results['hits']['hits']:
         #print("training with text: %s" % (songwords['_source']['text']))
@@ -163,7 +163,7 @@ def markov_response(es_results=None, max_len=140):
     response_text += "\n" + mc.generateString()
     response_text += "\n" + mc.generateString()
     response_text += "\n" + mc.generateString()
-    keepwords = regular_tweet.trim_to_140(text=response_text)
+    keepwords = regular_tweet.trim_to_280(text=response_text)
 
     try:
         response_text = keepwords.lowercase()
@@ -225,7 +225,7 @@ def responder(event, context):
     if parsed_message.is_multipart():
         for part in parsed_message.walk():
             ctype = part.get_content_type()
-            cdispo = str(part.get('Content-Disposition'))
+            #cdispo = str(part.get('Content-Disposition'))
             if ctype == 'text/html':
                 #print("YES FOUND HTML")
                 email_content_decoded = part.get_payload(decode=True)
@@ -251,7 +251,7 @@ def responder(event, context):
     # Build a search string for elasticsearch by
     # removing the @handle in the originating message
     #
-    search_text = re.sub("\s+@\S+", "", bsp.give_text())
+    search_text = re.sub(r"\s+@\S+", "", bsp.give_text())
     # And make a variable  of the originating handling
     respond_handle = bsp.find_sender_handle()
     print("RESPOND HANDLES ARE : %s" % (respond_handle))
