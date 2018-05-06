@@ -85,16 +85,15 @@ if __name__ == "__main__":
         response_text += " " + mc.generateString()
         #response_text = mc.generateStringWithSeed(searchword)
         print("Response would be:\n%s\n" % (response_text))
-        max_tweet_len = 140
+        max_tweet_len = 280
         keepwords = ""
         if len(response_text) > max_tweet_len:
            words = response_text.split()
            for word in words:
               #print("KEEPWORDS: %s " % (keepwords))
-              if len(keepwords) >140:
+              if len(keepwords) > 280:
                   raise Exception("Too long of a response")
-                  break
-              if len(keepwords) + len(word) > 140:
+              if len(keepwords) + len(word) > 280:
                   # RETURN NOW THIS IS ENOUGH
                   break
               keepwords = keepwords + " " + word
