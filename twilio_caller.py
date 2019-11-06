@@ -5,9 +5,6 @@ Accept incoming calls, and say back a @bobdylan_ebooks pontification
 from __future__ import print_function
 import sys
 import os
-here = os.path.dirname(os.path.realpath(__file__))
-# load vendored directory
-sys.path.append(os.path.join(here, "./vendored"))
 
 # regular include stuff
 import json

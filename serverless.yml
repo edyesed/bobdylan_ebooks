@@ -4,6 +4,13 @@
 
 service: bobdylanebooks
 
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: non-linux
+
 provider:
   name: aws
   runtime: python2.7
