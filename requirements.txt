@@ -4,7 +4,7 @@ backports.functools-lru-cache==1.5
 beautifulsoup4==4.5.1
 boto3==1.4.1
 botocore==1.4.78
-certifi==2018.4.16
+certifi==2022.12.7
 chardet==3.0.4
 configparser==3.5.0
 docutils==0.12
